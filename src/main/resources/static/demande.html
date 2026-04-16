@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouveau Titre de Séjour</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+            padding: 30px 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 22px;
+            color: #1a237e;
+        }
+
+        .form-wrapper {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            font-size: 15px;
+            font-weight: bold;
+            color: #1a237e;
+            border-bottom: 2px solid #e8eaf6;
+            padding-bottom: 10px;
+            margin-bottom: 18px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .grid.three { grid-template-columns: 1fr 1fr 1fr; }
+        .grid.full  { grid-template-columns: 1fr; }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        label .req { color: #c62828; }
+
+        input, select, textarea {
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 100%;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3949ab;
+        }
+
+        input.invalid, select.invalid {
+            border-color: #c62828;
+            background: #fff8f8;
+        }
+
+        .validation-msg {
+            font-size: 12px;
+            color: #c62828;
+            margin-top: 2px;
+        }
+
+        /* Pièces justificatives */
+        .pieces-loading { color: #888; font-style: italic; font-size: 14px; }
+
+        .piece-group-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #555;
+            margin: 14px 0 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .piece-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            background: #fafafa;
+        }
+
+        .piece-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .piece-item label {
+            font-weight: normal;
+            font-size: 14px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        /* Bouton */
+        .btn-valider {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: #1a237e;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            letter-spacing: 1px;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .btn-valider:hover { background: #283593; }
+        .btn-valider:disabled { background: #9fa8da; cursor: not-allowed; }
+
+        /* Alertes */
+        .alert {
+            padding: 14px 18px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert.success { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+        .alert.error   { background: #ffebee; color: #b71c1c; border: 1px solid #ef9a9a; }
+        .alert.show    { display: block; }
+
+        @media (max-width: 600px) {
+            .grid, .grid.three { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<h1>Demande de Nouveau Titre de Séjour</h1>
+
+<div class="form-wrapper">
+
+    <div id="alert-success" class="alert success"></div>
+    <div id="alert-error" class="alert error"></div>
+
+    <form id="demandeForm" novalidate>
+
+        <!-- ═══════════════════════════════════════ ÉTAT CIVIL ═══ -->
+        <div class="section">
+            <h2>État Civil</h2>
+            <div class="grid">
+                <div class="field">
+                    <label for="nom">Nom <span class="req">*</span></label>
+                    <input type="text" id="nom" name="nom" required>
+                    <span class="validation-msg" id="msg-nom"></span>
+                </div>
+                <div class="field">
+                    <label for="prenom">Prénom <span class="req">*</span></label>
+                    <input type="text" id="prenom" name="prenom" required>
+                    <span class="validation-msg" id="msg-prenom"></span>
+                </div>
+                <div class="field">
+                    <label for="nomJeuneFille">Nom de jeune fille</label>
+                    <input type="text" id="nomJeuneFille" name="nomJeuneFille">
+                </div>
+                <div class="field">
+                    <label for="dateNaissance">Date de naissance <span class="req">*</span></label>
+                    <input type="date" id="dateNaissance" name="dateNaissance" required>
+                    <span class="validation-msg" id="msg-dateNaissance"></span>
+                </div>
+                <div class="field">
+                    <label for="situationFamiliale">Situation familiale <span class="req">*</span></label>
+                    <select id="situationFamiliale" name="idSituationFamiliale" required>
+                        <option value="">-- Chargement... --</option>
+                    </select>
+                    <span class="validation-msg" id="msg-situationFamiliale"></span>
+                </div>
+                <div class="field">
+                    <label for="nationalite">Nationalité <span class="req">*</span></label>
+                    <select id="nationalite" name="idNationalite" required>
+                        <option value="">-- Chargement... --</option>
+                    </select>
+                    <span class="validation-msg" id="msg-nationalite"></span>
+                </div>
+                <div class="field">
+                    <label for="profession">Profession</label>
+                    <input type="text" id="profession" name="profession">
+                </div>
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email">
+                </div>
+                <div class="field">
+                    <label for="telephone">Téléphone</label>
+                    <input type="tel" id="telephone" name="telephone">
+                </div>
+            </div>
+            <div class="grid full" style="margin-top:14px">
+                <div class="field">
+                    <label for="adresse">Adresse</label>
+                    <input type="text" id="adresse" name="adresse">
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ PASSEPORT ═══ -->
+        <div class="section">
+            <h2>Passeport</h2>
+            <div class="grid three">
+                <div class="field">
+                    <label for="numeroPasseport">Numéro du passeport <span class="req">*</span></label>
+                    <input type="text" id="numeroPasseport" name="numeroPasseport" required>
+                    <span class="validation-msg" id="msg-numeroPasseport"></span>
+                </div>
+                <div class="field">
+                    <label for="dateDelivrancePasseport">Date de délivrance <span class="req">*</span></label>
+                    <input type="date" id="dateDelivrancePasseport" name="dateDelivrancePasseport" required>
+                    <span class="validation-msg" id="msg-dateDelivrancePasseport"></span>
+                </div>
+                <div class="field">
+                    <label for="dateExpirationPasseport">Date d'expiration <span class="req">*</span></label>
+                    <input type="date" id="dateExpirationPasseport" name="dateExpirationPasseport" required>
+                    <span class="validation-msg" id="msg-dateExpirationPasseport"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════ VISA TRANSFORMABLE ═══ -->
+        <div class="section">
+            <h2>Visa Transformable</h2>
+            <div class="grid">
+                <div class="field">
+                    <label for="referenceVisa">Référence <span class="req">*</span></label>
+                    <input type="text" id="referenceVisa" name="referenceVisa" required>
+                    <span class="validation-msg" id="msg-referenceVisa"></span>
+                </div>
+                <div class="field">
+                    <label for="dateEntreeVisa">Date d'entrée <span class="req">*</span></label>
+                    <input type="date" id="dateEntreeVisa" name="dateEntreeVisa" required>
+                    <span class="validation-msg" id="msg-dateEntreeVisa"></span>
+                </div>
+                <div class="field">
+                    <label for="lieuEntree">Lieu d'entrée <span class="req">*</span></label>
+                    <select id="lieuEntree" name="idLieuEntree" required>
+                        <option value="">-- Chargement... --</option>
+                    </select>
+                    <span class="validation-msg" id="msg-lieuEntree"></span>
+                </div>
+                <div class="field">
+                    <label for="dateExpirationVisa">Date d'expiration <span class="req">*</span></label>
+                    <input type="date" id="dateExpirationVisa" name="dateExpirationVisa" required>
+                    <span class="validation-msg" id="msg-dateExpirationVisa"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════ TYPE DE VISA DEMANDÉ ═══ -->
+        <div class="section">
+            <h2>Type de Visa Demandé</h2>
+            <div class="grid">
+                <div class="field">
+                    <label for="typeVisa">Type de visa <span class="req">*</span></label>
+                    <select id="typeVisa" name="idTypeVisa" required>
+                        <option value="">-- Sélectionner un type --</option>
+                    </select>
+                    <span class="validation-msg" id="msg-typeVisa"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════ PIÈCES JUSTIFICATIVES ═══════ -->
+        <div class="section">
+            <h2>Pièces Justificatives</h2>
+            <div id="pieces-container">
+                <p class="pieces-loading">Sélectionnez un type de visa pour afficher les pièces requises.</p>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ BOUTON ══════ -->
+        <button type="submit" class="btn-valider" id="btnValider">VALIDER</button>
+
+    </form>
+</div>
+
+<script>
+    const today = new Date().toISOString().split('T')[0];
+
+    // ── Chargement des dropdowns au démarrage ───────────────────────────────
+    async function loadDropdown(url, selectId, valueKey, labelKey) {
+        const sel = document.getElementById(selectId);
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+            sel.innerHTML = '<option value="">-- Sélectionner --</option>';
+            data.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item[valueKey];
+                opt.textContent = item[labelKey];
+                sel.appendChild(opt);
+            });
+        } catch {
+            sel.innerHTML = '<option value="">Erreur de chargement</option>';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadDropdown('/situations-familiales', 'situationFamiliale', 'id', 'libelle');
+        loadDropdown('/nationalites',          'nationalite',         'id', 'libelle');
+        loadDropdown('/lieux',                 'lieuEntree',          'id', 'libelle');
+        loadDropdown('/types-visa',            'typeVisa',            'id', 'libelle');
+    });
+
+    // ── Pièces dynamiques selon type visa ───────────────────────────────────
+    document.getElementById('typeVisa').addEventListener('change', async function () {
+        const idTypeVisa = this.value;
+        const container = document.getElementById('pieces-container');
+
+        if (!idTypeVisa) {
+            container.innerHTML = '<p class="pieces-loading">Sélectionnez un type de visa pour afficher les pièces requises.</p>';
+            return;
+        }
+
+        container.innerHTML = '<p class="pieces-loading">Chargement des pièces...</p>';
+
+        try {
+            const [resCommunes, resSpecifiques] = await Promise.all([
+                fetch('/pieces?type=commune'),
+                fetch(`/pieces?typeVisa=${idTypeVisa}`)
+            ]);
+            const communes    = await resCommunes.json();
+            const specifiques = await resSpecifiques.json();
+
+            // Déduplique
+            const seen = new Set();
+            const communesUniq    = communes.filter(p => seen.add(p.id));
+            const specifiquesUniq = specifiques.filter(p => !seen.has(p.id) && seen.add(p.id));
+
+            let html = '';
+
+            if (communesUniq.length > 0) {
+                html += '<div class="piece-group-title">Pièces communes</div>';
+                communesUniq.forEach(p => {
+                    html += `
+                    <div class="piece-item">
+                        <input type="checkbox" id="piece-${p.id}" name="piece-${p.id}" value="${p.id}">
+                        <label for="piece-${p.id}">${p.libelle}</label>
+                    </div>`;
+                });
+            }
+
+            if (specifiquesUniq.length > 0) {
+                html += '<div class="piece-group-title">Pièces spécifiques au type de visa</div>';
+                specifiquesUniq.forEach(p => {
+                    html += `
+                    <div class="piece-item">
+                        <input type="checkbox" id="piece-${p.id}" name="piece-${p.id}" value="${p.id}">
+                        <label for="piece-${p.id}">${p.libelle}</label>
+                    </div>`;
+                });
+            }
+
+            if (!html) {
+                html = '<p class="pieces-loading">Aucune pièce définie pour ce type de visa.</p>';
+            }
+
+            container.innerHTML = html;
+
+        } catch {
+            container.innerHTML = '<p class="pieces-loading" style="color:#c62828">Erreur lors du chargement des pièces.</p>';
+        }
+    });
+
+    // ── Validation en temps réel ─────────────────────────────────────────────
+    function setError(fieldId, msgId, message) {
+        const field = document.getElementById(fieldId);
+        const msg   = document.getElementById(msgId);
+        if (message) {
+            field.classList.add('invalid');
+            msg.textContent = message;
+        } else {
+            field.classList.remove('invalid');
+            msg.textContent = '';
+        }
+        return !message;
+    }
+
+    function validateForm() {
+        let valid = true;
+
+        valid = setError('nom',               'msg-nom',               document.getElementById('nom').value.trim()               ? '' : 'Le nom est obligatoire') && valid;
+        valid = setError('prenom',            'msg-prenom',            document.getElementById('prenom').value.trim()             ? '' : 'Le prénom est obligatoire') && valid;
+        valid = setError('dateNaissance',     'msg-dateNaissance',     document.getElementById('dateNaissance').value             ? '' : 'La date de naissance est obligatoire') && valid;
+        valid = setError('situationFamiliale','msg-situationFamiliale',document.getElementById('situationFamiliale').value        ? '' : 'La situation familiale est obligatoire') && valid;
+        valid = setError('nationalite',       'msg-nationalite',       document.getElementById('nationalite').value               ? '' : 'La nationalité est obligatoire') && valid;
+
+        // Passeport
+        valid = setError('numeroPasseport',      'msg-numeroPasseport',      document.getElementById('numeroPasseport').value.trim()      ? '' : 'Le numéro de passeport est obligatoire') && valid;
+        valid = setError('dateDelivrancePasseport','msg-dateDelivrancePasseport', document.getElementById('dateDelivrancePasseport').value ? '' : 'La date de délivrance est obligatoire') && valid;
+
+        const dateExpPasseport = document.getElementById('dateExpirationPasseport').value;
+        if (!dateExpPasseport) {
+            valid = setError('dateExpirationPasseport', 'msg-dateExpirationPasseport', "La date d'expiration est obligatoire") && valid;
+        } else if (dateExpPasseport < today) {
+            valid = setError('dateExpirationPasseport', 'msg-dateExpirationPasseport', 'Le passeport est expiré') && valid;
+        } else {
+            setError('dateExpirationPasseport', 'msg-dateExpirationPasseport', '');
+        }
+
+        // Visa
+        valid = setError('referenceVisa',  'msg-referenceVisa',  document.getElementById('referenceVisa').value.trim()  ? '' : 'La référence est obligatoire') && valid;
+        valid = setError('dateEntreeVisa', 'msg-dateEntreeVisa', document.getElementById('dateEntreeVisa').value         ? '' : "La date d'entrée est obligatoire") && valid;
+        valid = setError('lieuEntree',     'msg-lieuEntree',     document.getElementById('lieuEntree').value             ? '' : "Le lieu d'entrée est obligatoire") && valid;
+
+        const dateExpVisa = document.getElementById('dateExpirationVisa').value;
+        if (!dateExpVisa) {
+            valid = setError('dateExpirationVisa', 'msg-dateExpirationVisa', "La date d'expiration est obligatoire") && valid;
+        } else if (dateExpVisa < today) {
+            valid = setError('dateExpirationVisa', 'msg-dateExpirationVisa', 'Le visa est expiré') && valid;
+        } else {
+            setError('dateExpirationVisa', 'msg-dateExpirationVisa', '');
+        }
+
+        // Type visa
+        valid = setError('typeVisa', 'msg-typeVisa', document.getElementById('typeVisa').value ? '' : 'Le type de visa est obligatoire') && valid;
+
+        return valid;
+    }
+
+    // ── Soumission du formulaire ─────────────────────────────────────────────
+    document.getElementById('demandeForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        hideAlerts();
+        if (!validateForm()) return;
+
+        // Collecte des pièces cochées
+        const pieces = [];
+        document.querySelectorAll('#pieces-container input[type="checkbox"]').forEach(cb => {
+            pieces.push({ idPiece: parseInt(cb.value), fourni: cb.checked });
+        });
+
+        const payload = {
+            nom:                       document.getElementById('nom').value.trim(),
+            prenom:                    document.getElementById('prenom').value.trim(),
+            nomJeuneFille:             document.getElementById('nomJeuneFille').value.trim() || null,
+            dateNaissance:             document.getElementById('dateNaissance').value,
+            idSituationFamiliale:      parseInt(document.getElementById('situationFamiliale').value),
+            idNationalite:             parseInt(document.getElementById('nationalite').value),
+            adresse:                   document.getElementById('adresse').value.trim() || null,
+            profession:                document.getElementById('profession').value.trim() || null,
+            email:                     document.getElementById('email').value.trim() || null,
+            telephone:                 document.getElementById('telephone').value.trim() || null,
+            numeroPasseport:           document.getElementById('numeroPasseport').value.trim(),
+            dateDelivrancePasseport:   document.getElementById('dateDelivrancePasseport').value,
+            dateExpirationPasseport:   document.getElementById('dateExpirationPasseport').value,
+            referenceVisa:             document.getElementById('referenceVisa').value.trim(),
+            dateEntreeVisa:            document.getElementById('dateEntreeVisa').value,
+            idLieuEntree:              parseInt(document.getElementById('lieuEntree').value),
+            dateExpirationVisa:        document.getElementById('dateExpirationVisa').value,
+            idTypeVisa:                parseInt(document.getElementById('typeVisa').value),
+            pieces:                    pieces
+        };
+
+        const btn = document.getElementById('btnValider');
+        btn.disabled = true;
+        btn.textContent = 'Envoi en cours...';
+
+        try {
+            const res = await fetch('/demandes', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify(payload)
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                showAlert('success', `Demande créée avec succès ! ID : ${data.id} — Statut : ${data.status}`);
+                document.getElementById('demandeForm').reset();
+                document.getElementById('pieces-container').innerHTML =
+                    '<p class="pieces-loading">Sélectionnez un type de visa pour afficher les pièces requises.</p>';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                showAlert('error', data.erreur || 'Une erreur est survenue.');
+            }
+        } catch {
+            showAlert('error', 'Impossible de contacter le serveur.');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'VALIDER';
+        }
+    });
+
+    function showAlert(type, message) {
+        const el = document.getElementById(`alert-${type}`);
+        el.textContent = message;
+        el.classList.add('show');
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function hideAlerts() {
+        document.getElementById('alert-success').classList.remove('show');
+        document.getElementById('alert-error').classList.remove('show');
+    }
+</script>
+
+</body>
+</html>
