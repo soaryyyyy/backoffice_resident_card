@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Backoffice - Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; background: #f5f5f5; }
+        h1 { color: #333; }
+        .card { background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin-right: 10px; }
+        button:hover { background: #0056b3; }
+        .status { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 14px; }
+        .ok { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        pre { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 15px; overflow-x: auto; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+<h1>Backoffice Resident Card — Test</h1>
+
+<div class="card">
+    <h2>1. Ping serveur</h2>
+    <button onclick="ping()">Tester /api/test/ping</button>
+    <span id="ping-status"></span>
+    <pre id="ping-result"></pre>
+</div>
+
+<div class="card">
+    <h2>2. Connexion base de données</h2>
+    <button onclick="getSituations()">Tester /api/test/situations-familiales</button>
+    <span id="db-status"></span>
+    <pre id="db-result"></pre>
+</div>
+
+<script>
+    async function ping() {
+        const statusEl = document.getElementById('ping-status');
+        const resultEl = document.getElementById('ping-result');
+        try {
+            const res = await fetch('/api/test/ping');
+            const data = await res.json();
+            statusEl.className = 'status ok';
+            statusEl.textContent = '✓ OK';
+            resultEl.textContent = JSON.stringify(data, null, 2);
+        } catch (e) {
+            statusEl.className = 'status error';
+            statusEl.textContent = '✗ Erreur';
+            resultEl.textContent = e.message;
+        }
+    }
+
+    async function getSituations() {
+        const statusEl = document.getElementById('db-status');
+        const resultEl = document.getElementById('db-result');
+        try {
+            const res = await fetch('/api/test/situations-familiales');
+            const data = await res.json();
+            statusEl.className = 'status ok';
+            statusEl.textContent = '✓ BD connectée (' + data.length + ' enregistrement(s))';
+            resultEl.textContent = JSON.stringify(data, null, 2);
+        } catch (e) {
+            statusEl.className = 'status error';
+            statusEl.textContent = '✗ Erreur BD';
+            resultEl.textContent = e.message;
+        }
+    }
+</script>
+
+</body>
+</html>

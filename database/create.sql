@@ -1,5 +1,7 @@
 -- Base de données Demande de Visa
 
+create database resident_card;
+\c resident_card;
 -- Tables de référence
 CREATE TABLE situation_familiale (
     id SERIAL PRIMARY KEY,
