@@ -86,7 +86,8 @@ CREATE TABLE piece (
 CREATE TABLE piece_type_visa (
     id SERIAL PRIMARY KEY,
     id_piece INT NOT NULL REFERENCES piece(id),
-    id_type_visa INT NOT NULL REFERENCES type_visa(id)
+    id_type_visa INT NOT NULL REFERENCES type_visa(id),
+    est_obligatoire BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE demande_piece (
@@ -117,7 +118,6 @@ INSERT INTO nationalite (libelle) VALUES
 ('Italienne');
 
 INSERT INTO lieu (libelle) VALUES
-('Ivato'),
 ('Antananarivo'),
 ('Toamasina'),
 ('Nosy Be Fascene'),
@@ -157,16 +157,17 @@ INSERT INTO piece (libelle, id_type_piece, commune) VALUES
 ('Curriculum Vitae (CV)', 3, FALSE),
 ('Copies des diplômes', 4, FALSE);
 
-INSERT INTO piece_type_visa (id_piece, id_type_visa) VALUES
-(4, 2),
-(5, 2),
-(6, 2),
-(7, 2),
-(8, 2);
+INSERT INTO piece_type_visa (id_piece, id_type_visa, est_obligatoire) VALUES
+(4, 2, TRUE),
+(5, 2, TRUE),
+(6, 2, TRUE),
+(7, 2, TRUE),
+(8, 2, TRUE);
 
-INSERT INTO piece_type_visa (id_piece, id_type_visa) VALUES
-(9, 3),
-(10, 3),
-(11, 3),
-(12, 3),
-(13, 3);
+INSERT INTO piece_type_visa (id_piece, id_type_visa, est_obligatoire) VALUES
+(9, 3, TRUE),
+(10, 3, TRUE),
+(11, 3, TRUE),
+(12, 3, FALSE),
+(13, 3, FALSE);
+
