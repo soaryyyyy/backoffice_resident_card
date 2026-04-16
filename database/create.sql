@@ -86,7 +86,8 @@ CREATE TABLE piece (
 CREATE TABLE piece_type_visa (
     id SERIAL PRIMARY KEY,
     id_piece INT NOT NULL REFERENCES piece(id),
-    id_type_visa INT NOT NULL REFERENCES type_visa(id)
+    id_type_visa INT NOT NULL REFERENCES type_visa(id),
+    est_obligatoire BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE demande_piece (
@@ -104,3 +105,69 @@ INSERT INTO situation_familiale (libelle) VALUES
 
 INSERT INTO categorie_demande (libelle) VALUES 
 ('NOUVEAU_TITRE'), ('RENOUVELLEMENT'), ('DUPLICATA');
+
+INSERT INTO nationalite (libelle) VALUES
+('Française'),
+('Comorienne'),
+('Mauricienne'),
+('Chinoise'),
+('Indienne'),
+('Sud-africaine'),
+('Allemande'),
+('Américaine'),
+('Italienne');
+
+INSERT INTO lieu (libelle) VALUES
+('Antananarivo'),
+('Toamasina'),
+('Nosy Be Fascene'),
+('Mahajanga'),
+('Vohémar');
+
+INSERT INTO type_visa (libelle) VALUES
+('VISA_TRANSFORMABLE'),
+('VISA_INVESTISSEUR'),
+('VISA_TRAVAILLEUR');
+
+INSERT INTO type_piece (libelle) VALUES
+('IDENTITE'),
+('JUSTIFICATIF'),
+('PROFESSIONNEL'),
+('SCOLAIRE'),
+('FINANCIER'),
+('MEDICAL');
+
+INSERT INTO piece (libelle, id_type_piece, commune) VALUES
+
+('Passeport valide', 1, TRUE),
+('Photo d''identité', 1, TRUE),
+('Formulaire de demande', 2, TRUE),
+
+('Statuts de la société', 3, FALSE),
+('Registre de commerce (RCS)', 3, FALSE),
+('Numéro d''identification fiscale (NIF)', 5, FALSE),
+('Plan d''investissement', 5, FALSE),
+('Attestation bancaire de fonds', 5, FALSE);
+
+INSERT INTO piece (libelle, id_type_piece, commune) VALUES
+
+('Contrat de travail signé', 3, FALSE),
+('Autorisation d''emploi délivrée', 3, FALSE),
+('Lettre de l''employeur', 3, FALSE),
+('Curriculum Vitae (CV)', 3, FALSE),
+('Copies des diplômes', 4, FALSE);
+
+INSERT INTO piece_type_visa (id_piece, id_type_visa, est_obligatoire) VALUES
+(4, 2, TRUE),
+(5, 2, TRUE),
+(6, 2, TRUE),
+(7, 2, TRUE),
+(8, 2, TRUE);
+
+INSERT INTO piece_type_visa (id_piece, id_type_visa, est_obligatoire) VALUES
+(9, 3, TRUE),
+(10, 3, TRUE),
+(11, 3, TRUE),
+(12, 3, FALSE),
+(13, 3, FALSE);
+

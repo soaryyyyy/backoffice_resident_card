@@ -1,4 +1,4 @@
-# TODO - Sprint 1 : Page Insertion Nouveau Titre
+# TODO - Sprint 1 : Page Insertion Nouveau Titre FITIA
 
 ## FRONTEND
 
@@ -81,6 +81,77 @@
 - [ ] EtatCivil : vérifier données, insertion
 - [ ] Passeport : vérifier données, cohérence, expiration, insertion si nouveau
 - [ ] Visa : vérifier données, expiration, insertion
-- [ ] DemandeTitre : lier visa + passeport + état civil, status=EN_COURS, catégorie=NOUVEAU_TITRE, insertion
+- [ ] DemandeTitre : lier visa + passeport + état civil, status=CREE, catégorie=NOUVEAU_TITRE, insertion
 - [ ] DemandePiece : charger pièces attendues, fourni=false, valide=false, dateDepot=null
 - [ ] Commit / Rollback si erreur
+
+---
+# NOAH - Sprint 1
+
+## FRONTEND
+
+### [ ] Page Liste des Dossiers
+- [ ] Tableau : ID, Nom, Prénom, Type Visa, Status, Date création, Complétude
+- [ ] Filtres : status, type visa, date
+- [ ] Recherche : nom/prénom/numéro passeport
+- [ ] Pagination
+- [ ] Bouton "Voir détails"
+- [ ] Badge complet/incomplet
+
+### [ ] Page Vérification Dossier
+- [ ] Infos personne (lecture seule)
+- [ ] Infos passeport (lecture seule)
+- [ ] Infos visa (lecture seule)
+- [ ] Liste pièces avec colonnes : libelle, obligatoire, fourni, validé
+- [ ] Distinction visuelle pièces obligatoires vs optionnelles
+- [ ] Checkbox "validé" par pièce
+- [ ] Indicateur global complétude (basé sur pièces obligatoires)
+- [ ] Bouton "Marquer comme complet"
+
+### [ ] Page Modification Informations
+- [ ] Édition personne : nom, prénom, nom_jeune_fille, date_naissance, situation_familiale, nationalite, adresse, profession, email, telephone
+- [ ] Édition passeport : numero, date_delivrance, date_expiration
+- [ ] Édition visa : reference, date_entree, lieu_entree, date_expiration
+- [ ] Mêmes validations que l'insertion
+- [ ] Bouton "Enregistrer"
+
+---
+
+## BACKEND
+
+### [ ] API GET
+- [ ] GET /demandes?status=&typeVisa=&page=&size=
+- [ ] GET /demandes/{id}
+- [ ] GET /demandes/{id}/pieces
+- [ ] GET /demandes/{id}/completude
+
+### [ ] API PUT
+- [ ] PUT /personnes/{id}
+- [ ] PUT /passeports/{id}
+- [ ] PUT /visas/{id}
+- [ ] PUT /demande-pieces/{id} (màj fourni/valide)
+- [ ] PUT /demandes/{id}/status
+
+### [ ] Fonctions Service
+- [ ] getDemandesList(filtres, pageable) : Page<DemandeTitreDTO>
+- [ ] getDemandeById(int id) : DemandeTitreDTO
+- [ ] getPiecesByDemande(int idDemande) : List<DemandePieceDTO>
+- [ ] checkCompletude(int idDemande) : CompletudDTO
+- [ ] updatePersonne(int id, PersonneDTO)
+- [ ] updatePasseport(int id, PasseportDTO)
+- [ ] updateVisa(int id, VisaDTO)
+- [ ] updateDemandePiece(int id, boolean fourni, boolean valide)
+- [ ] updateDemandeStatus(int id, String status)
+
+### [ ] Logique Vérification Complétude
+- [ ] Récupérer pièces obligatoires via piece_type_visa.est_obligatoire = true
+- [ ] Vérifier toutes pièces obligatoires fournies (demande_piece.fourni = true)
+- [ ] Vérifier toutes pièces obligatoires validées (demande_piece.valide = true)
+- [ ] Vérifier passeport.date_expiration > NOW()
+- [ ] Vérifier visa.date_expiration > NOW()
+- [ ] Retourner : isComplet, piecesManquantes[], piecesNonValidees[]
+
+### [ ] DTOs
+- [ ] DemandeTitreDTO (avec infos personne, passeport, visa, type_visa, status)
+- [ ] DemandePieceDTO (avec libelle, est_obligatoire, fourni, valide, date_depot)
+- [ ] CompletudDTO (isComplet, piecesManquantes, piecesNonValidees, passeportExpire, visaExpire)
